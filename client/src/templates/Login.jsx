@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import BarLoading from "../components/BarLoading";
 
 const schema = Yup.object().shape({
   email: Yup.string().matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
@@ -17,6 +18,7 @@ export default function Login() {
   const location = useLocation();
 
   const [passwordTypeByEye, setPasswordTypeByEye] = useState("password");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -34,6 +36,7 @@ export default function Login() {
   const { login } = useContext(AuthContext);
 
   async function onSubmit(datas) {
+    setLoading(true);
     try {
       if (location.pathname.startsWith("/admin")) {
         const res = await axios.post(
@@ -52,7 +55,9 @@ export default function Login() {
         toast.success(res.data.message, { autoClose: 1400 });
         navigate("/dashboard/home");
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       toast.error(error.response.data.message, { autoClose: 1700 });
     }
   }
@@ -133,6 +138,11 @@ export default function Login() {
             </Link>
           </p>
         </form>
+        {loading && (
+          <div style={{ position: "fixed" }}>
+            <BarLoading />
+          </div>
+        )}
       </div>
     </>
   );

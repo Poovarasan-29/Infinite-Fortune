@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import BarLoading from "../components/BarLoading";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -15,10 +16,7 @@ const schema = Yup.object().shape({
   otp: Yup.string().when("$otpSent", (otpSent, schema) =>
     otpSent ? schema.required("OTP is required") : schema
   ),
-  password: Yup.string()
-    .required("Password is required")
-    .min(6)
-    .max(12),
+  password: Yup.string().required("Password is required").min(6).max(12),
   referrer: Yup.string().notRequired(),
 });
 
@@ -28,6 +26,7 @@ export default function Register() {
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [passwordTypeByEye, setPasswordTypeByEye] = useState("password");
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -55,6 +54,7 @@ export default function Register() {
   const otpSentWatch = watch("otpSent", otpSent);
 
   async function onSubmit(datas) {
+    setLoading(true);
     const res = await axios.post(
       import.meta.env.VITE_API_URL + "signup",
       datas
@@ -66,6 +66,7 @@ export default function Register() {
     } else {
       toastId = toast.success(res.data.message, { autoClose: 1500 });
     }
+    setLoading(false);
     setTimeout(() => {
       if (res.status == 201) {
         toast.dismiss(toastId);
@@ -122,8 +123,8 @@ export default function Register() {
   }
   return (
     <>
-            <title>Sign up</title>
-            <div
+      <title>Sign up</title>
+      <div
         style={{ height: "100vh" }}
         className="d-flex align-items-center justify-content-center row"
       >
@@ -246,6 +247,11 @@ export default function Register() {
             </Link>
           </p>
         </form>
+        {loading && (
+          <div style={{ position: "fixed" }}>
+            <BarLoading />
+          </div>
+        )}
       </div>
     </>
   );

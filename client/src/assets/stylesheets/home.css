@@ -65,7 +65,7 @@
   width: 60px;
   height: 60px;
   border: 4px solid blue;
-  border-top-color: white;
+  border-top-color: transparent;
   border-radius: 50%;
   animation: rotate 2s ease infinite alternate;
 }
@@ -77,6 +77,26 @@
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.bar-loader {
+  width: 10px;
+  height: 40px;
+  background-color: black;
+  animation: grow 0.7s ease infinite alternate;
+  border-radius: 2px;
+}
+.bar-loader:first-child,
+.bar-loader:last-child {
+  animation-delay: 0.3s;
+}
+@keyframes grow {
+  0% {
+    height: 0px;
+  }
+  100% {
+    height: 40px;
   }
 }
 

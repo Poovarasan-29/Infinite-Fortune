@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import BarLoading from "./BarLoading";
 
 const schema = Yup.object().shape({
   email: Yup.string().matches(
@@ -26,6 +27,7 @@ export default function ForgotPassword() {
   const [running, setRunning] = useState(false);
   const [signupHover, setSignupHover] = useState(false);
   const [loginHover, setLoginHover] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -73,6 +75,7 @@ export default function ForgotPassword() {
     setIsValidEmail(pattern.test(email));
   }
   async function onSubmit(datas) {
+    setLoading(true);
     try {
       const res = await axios.post(
         import.meta.env.VITE_API_URL + "forgot-password-request",
@@ -82,6 +85,8 @@ export default function ForgotPassword() {
       navigate("/login");
     } catch (error) {
       toast.error(error.response.data.message, { autoClose: 1700 });
+    } finally {
+      setLoading(false);
     }
   }
   async function handleOtpSentButton() {
@@ -267,6 +272,11 @@ export default function ForgotPassword() {
             </Link>
           </p>
         </form>
+        {loading && (
+          <div style={{ position: "fixed" }}>
+            <BarLoading />
+          </div>
+        )}
       </div>
     </>
   );

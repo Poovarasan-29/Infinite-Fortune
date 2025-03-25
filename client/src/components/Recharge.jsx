@@ -182,25 +182,25 @@ export default function Recharge() {
               style={{ width: "fit-content" }}
             >
               <FormControlLabel
-                value="spking222005@okicic"
+                value="spking222005@okaxis"
                 control={<Radio />}
-                label="spking222005@okicic"
+                label="spking222005@okaxis"
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 value="6384889012@paytm"
                 control={<Radio />}
                 label="6384889012@paytm"
               />
               <FormControlLabel
-                value="poovarasan.py"
+                value="6384889012"
                 control={<Radio />}
-                label="poovarasan.py"
+                label="6384889012"
               />
               <FormControlLabel
                 value="phonepe.6384.hdfc"
                 control={<Radio />}
                 label="phonepe.6384.hdfc"
-              />
+              /> */}
             </RadioGroup>
             <mark className="me-4 my-2">
               Hint: Click on the UPI ID to copy and make the payment, then
