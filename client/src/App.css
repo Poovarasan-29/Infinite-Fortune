@@ -1,0 +1,23 @@
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: rgba(244, 242, 238, 255) !important;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.dashboard {
+  width: 60%;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+}
