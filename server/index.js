@@ -27,6 +27,10 @@ app.use(plansRouter);
 app.use(manageBalanceRouter);
 app.use(withdrawalRequestRouter);
 
+app.get("/", (req, res) => {
+  res.send("Server is running...");
+});
+
 app.listen(3000, () => {
   console.log("Server Running...");
 });
