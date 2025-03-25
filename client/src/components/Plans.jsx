@@ -113,9 +113,9 @@ export default function Plans() {
             isBuyClicked ? { filter: "blur(5px)", pointerEvents: "none" } : {}
           }
         >
-          <p className="fw-light m-0 mb-3" style={{ fontSize: "30px" }}>
+          <p className="fw-light m-0 mb-3 available-balance-text" style={{ fontSize: "30px" }}>
             Available Balance <br />
-            <span className="fw-light" style={{ fontSize: "30px" }}>
+            <span className="fw-light balance-text">
               <span>
                 <i
                   className="bi bi-currency-rupee"
@@ -124,7 +124,7 @@ export default function Plans() {
                   {balance > 0 ? balance : 0}
                 </i>
               </span>
-            </span>
+            </span> 
           </p>
           <div className="d-flex justify-content-center flex-wrap">
             {plans.map((plan, index) => (

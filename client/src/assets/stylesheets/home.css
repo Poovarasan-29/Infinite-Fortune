@@ -124,12 +124,27 @@
 
 @media (max-width: 400px) {
   .card {
-    width: 100% !important;
+    width: 16rem !important;
   }
+  .available-balance-text,.available-balance-text span span i{
+    font-size: 23px !important;
+    transition: .3s;
+  }
+
   .name-today-claim-div {
     flex-direction: column;
   }
   .refer-link-btn {
     width: 90%;
   }
+}
+@media (max-width: 300px) {
+  .card {
+  width: 100% !important;
+  }
+  .available-balance-text, .available-balance-text span span i{
+    font-size: 16px !important;
+    transition: .3s;
+  }
+  
 }
