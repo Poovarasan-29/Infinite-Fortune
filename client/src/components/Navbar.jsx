@@ -12,7 +12,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleResize = () => {
       const innerWidth = window.innerWidth;
-   
+
       if (innerWidth > 540) setBurgerBarOpen(false);
       setWidth(innerWidth);
     };

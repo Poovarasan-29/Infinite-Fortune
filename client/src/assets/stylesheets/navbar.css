@@ -31,6 +31,7 @@
 .nav-lists {
   display: flex;
 }
+
 .burger-bar span {
   width: 40px;
   height: 3.3px;

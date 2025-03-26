@@ -47,6 +47,7 @@ export default function Register() {
   });
 
   useEffect(() => {
+    if (localStorage.getItem("token")) navigate("/dashboard/home");
     const refferalCode = searchParams.get("referral");
     setValue("referrer", refferalCode);
   }, []);

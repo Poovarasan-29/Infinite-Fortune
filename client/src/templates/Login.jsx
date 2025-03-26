@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { TextField, Button } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -34,6 +34,10 @@ export default function Login() {
     },
   });
   const { login } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) navigate("/dashboard/home");
+  }, []);
 
   async function onSubmit(datas) {
     setLoading(true);
