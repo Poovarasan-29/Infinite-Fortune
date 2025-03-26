@@ -55,24 +55,29 @@ export default function Register() {
 
   async function onSubmit(datas) {
     setLoading(true);
-    const res = await axios.post(
-      import.meta.env.VITE_API_URL + "signup",
-      datas
-    );
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_API_URL + "signup",
+        datas
+      );
 
-    let toastId;
-    if (res.data.success == false) {
-      toastId = toast.error(res.data.message, { autoClose: 1500 });
-    } else {
-      toastId = toast.success(res.data.message, { autoClose: 1500 });
-    }
-    setLoading(false);
-    setTimeout(() => {
-      if (res.status == 201) {
-        toast.dismiss(toastId);
-        navigate("/login");
+      let toastId;
+      if (res.data.success == false) {
+        toastId = toast.error(res.data.message, { autoClose: 1500 });
+      } else {
+        toastId = toast.success(res.data.message, { autoClose: 1500 });
       }
-    }, 1000);
+      setTimeout(() => {
+        if (res.status == 201) {
+          toast.dismiss(toastId);
+          navigate("/login");
+        }
+      }, 1000);
+    } catch (error) {
+      toast.error(error.response.data.message, { autoClose: 1500 });
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleEmailIsValid(e) {

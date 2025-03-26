@@ -30,7 +30,7 @@ router.post("/signup", checkOtpMiddleware, async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   let userId = crypto.randomInt(100000, 999999).toString();
   const existUserIds = await UsersModel.find({}, { userId: 1, _id: 0 });
-  while (existUserIds.includes(userId)) {
+  while (existUserIds.some((id) => id.userId == userId)) {
     userId = crypto.randomInt(100000, 999999).toString();
   }
 
@@ -45,14 +45,14 @@ router.post("/signup", checkOtpMiddleware, async (req, res) => {
       balance: 0,
     });
     //   Update the Referrer
-    const updated = await UsersModel.findOneAndUpdate(
+    await UsersModel.findOneAndUpdate(
       { userId: referrer },
       { $push: { referrals: userId } }
     );
 
-    return res.status(201).json({ message: "Successfull" });
+    return res.status(201).json({ message: "Successfully registered" });
   } catch (error) {
-    return res.json({ message: "Error while signup, Try again" });
+    return res.status(500).json({ message: "Error while signup, Try again" });
   }
 });
 
@@ -108,11 +108,14 @@ router.post(
 
     try {
       // Create new user
-      await UsersModel.updateOne({
-        email,
-        password: hashPassword,
-      });
-
+      await UsersModel.updateOne(
+        {
+          email,
+        },
+        {
+          $set: { password: hashPassword },
+        }
+      );
       return res.status(200).json({ message: "Password Changed" });
     } catch (error) {
       return res.status(500).json({ message: "Server error! Try again" });
