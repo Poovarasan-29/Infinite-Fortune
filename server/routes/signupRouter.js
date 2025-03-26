@@ -38,11 +38,11 @@ router.post("/signup", checkOtpMiddleware, async (req, res) => {
     // Create new user
     await UsersModel.create({
       name,
-      email,
+      email, 
       password: hashPassword,
       userId,
       referrer,
-      balance: 0,
+      rechargedBalance: 0,
     });
     //   Update the Referrer
     await UsersModel.findOneAndUpdate(
