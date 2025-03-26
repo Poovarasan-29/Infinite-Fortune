@@ -42,6 +42,7 @@ router.post("/signup", checkOtpMiddleware, async (req, res) => {
       password: hashPassword,
       userId,
       referrer,
+      balance: 0,
     });
     //   Update the Referrer
     const updated = await UsersModel.findOneAndUpdate(
@@ -114,7 +115,7 @@ router.post(
 
       return res.status(200).json({ message: "Password Changed" });
     } catch (error) {
-      return res.json({ message: "Error while signup, Try again" });
+      return res.status(500).json({ message: "Server error! Try again" });
     }
   }
 );

@@ -89,7 +89,7 @@ export default function Register() {
 
   async function handleOtpSentButton() {
     if (isValidEmail) {
-      const toasterLoading = toast.loading("OTP sending to mail", {
+      const toasterLoading = toast.loading("OTP sending to email", {
         theme: "dark",
       });
       setIsValidEmail(false);

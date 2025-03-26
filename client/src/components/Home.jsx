@@ -19,7 +19,7 @@ export default function Home() {
         .then((res) => setUserFullDatas(res.data))
         .catch((err) => console.error(err));
     }
-  }, [userData]);
+  }, [userData]); 
 
   function handleDailyCheckIn(e) {
     axios

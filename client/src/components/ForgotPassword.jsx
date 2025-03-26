@@ -198,7 +198,7 @@ export default function ForgotPassword() {
           )}
           <div className="position-relative">
             <TextField
-              label="Password*"
+              label="New Password*"
               name="password"
               type={passwordTypeByEye}
               variant="outlined"

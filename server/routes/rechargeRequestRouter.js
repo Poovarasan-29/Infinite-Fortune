@@ -11,7 +11,11 @@ router.post("/recharge", async (req, res) => {
       email: "spking222005@gmail.com",
     });
     // Prevent from enter repeted same transaction Id
-    if (admin.acceptedRechargeRequests.includes(transactionId))
+    if (
+      admin.acceptedRechargeRequests.some(
+        (request) => request.transactionId == transactionId
+      )
+    )
       return res.status(309).json({ message: "Transaction already completed" });
 
     await AdminModel.findOneAndUpdate(

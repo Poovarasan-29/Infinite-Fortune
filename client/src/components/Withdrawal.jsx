@@ -44,6 +44,16 @@ export default function Withdrawal() {
     if (!userDatas.withdrawalBalanace || userDatas.withdrawalBalanace < 200) {
       return toast.warning("Low withdrawal balance", { autoClose: 2000 });
     }
+
+    if (amount > userDatas.withdrawalBalanace) {
+      toast.warning(
+        "Available balance " + userDatas.withdrawalBalanace + " only",
+        {
+          autoClose: 2000,
+        }
+      );
+      return;
+    }
     if (amount < 200) {
       toast.warning("Amount minimum ₹200", { autoClose: 2000 });
     }
@@ -76,7 +86,7 @@ export default function Withdrawal() {
         toast.success(res.data.message, { autoClose: 1400 });
       } catch (error) {
         setIsFormSubmitted(false);
-        toast.success(error.response.data.message, { autoClose: 1400 });
+        toast.error(error.response.data.message, { autoClose: 1400 });
       }
     }
   }
@@ -107,12 +117,18 @@ export default function Withdrawal() {
             <p className="text-danger mt-3">Low withdrawal balance</p>
           )}
           {waitingWithdrawal && (
-            <h5
-              className="text-warning p-2 mt-3"
-              style={{ borderBottom: "2px solid black" }}
+            <h6
+              className="text-warning p-2 mt-3 border shadow"
+              style={{
+                letterSpacing: "1px",
+                wordSpacing: "5px",
+                textAlign: "justify",
+              }}
             >
-              Wait for completion before withdrawing
-            </h5>
+              Your withdrawal request is being processed. Please wait for
+              completion before submitting another request. Thank you for your
+              patience.
+            </h6>
           )}
           <FormControl className="ms-3 w-100 overflow-hidden">
             <div className="m-3 w-75 d-flex flex-column gap-3">
@@ -140,6 +156,12 @@ export default function Withdrawal() {
                   }
                 }}
               />
+              {amount && (
+                <p style={{ fontSize: "14px", marginLeft: "10px" }}>
+                  <span className="mark">20% tax</span> You will get ₹
+                  {Math.floor(amount - (20 / 100) * amount)}
+                </p>
+              )}
               <TextField
                 label="Enter Your UPI Id"
                 onChange={(e) => setTransferToUPI(e.target.value.trim())}

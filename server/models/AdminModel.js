@@ -30,6 +30,14 @@ const AdminSchema = new mongoose.Schema({
       transferToUPI: String,
     },
   ],
+  rejectedWithdrawalRequests: [
+    {
+      userId: String,
+      amount: Number,
+      transferToUPI: String,
+      status: String,
+    },
+  ],
 });
 
 const AdminModel = mongoose.model("admin", AdminSchema);

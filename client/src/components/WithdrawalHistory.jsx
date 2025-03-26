@@ -47,7 +47,9 @@ export default function WithdrawalHistory() {
             {currentData.map((data, index) => (
               <tr key={index} className="text-center">
                 <td>{index + 1}</td>
-                <td>{data.amount}</td>
+                <td>
+                  {data.amount}({Math.floor(data.amount - (20 / 100) * data.amount)})
+                </td>
                 <td>{data.transferToUPI}</td>
                 <td>{data.transactionId}</td>
                 <td

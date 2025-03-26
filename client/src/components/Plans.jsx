@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
 import { Helmet } from "react-helmet-async";
+import BarLoading from "./BarLoading";
 // import ConformationPopUp from "./ConformationPopUp";
 
 export default function Plans() {
@@ -39,9 +40,10 @@ export default function Plans() {
       text: "1KG Ice Cake",
     },
   ];
-  const [balance, setBalance] = useState(null);
+  const [balance, setBalance] = useState("?");
   const { userData } = useContext(AuthContext);
   const [isBuyClicked, setIsBuyClicked] = useState(false);
+  const [buyConfirmationLoading, setBuyConfirmationLoading] = useState(false);
 
   async function getBalance() {
     const res = await axios.get(
@@ -52,6 +54,7 @@ export default function Plans() {
         },
       }
     );
+
     setBalance(res.data.rechargedBalance);
   }
   useEffect(() => {
@@ -66,8 +69,7 @@ export default function Plans() {
     // isBuyClicked == false no items selected
     // If any selectesd the isBuyClicked Has index of the clicked item
     if (isBuyClicked !== false) {
-      setIsBuyClicked(false);
-
+      setBuyConfirmationLoading(true);
       try {
         const res = await axios.post(
           import.meta.env.VITE_API_URL + "buy-plan",
@@ -85,9 +87,12 @@ export default function Plans() {
           }
         );
         toast.success(res.data.message, { autoClose: 1400 });
-        if (userData?.userId) getBalance();
+        if (userData.userId) getBalance();
       } catch (error) {
         toast.error(error.response.data.message, { autoClose: 1400 });
+      } finally {
+        setIsBuyClicked(false);
+        setBuyConfirmationLoading(false);
       }
     }
   }
@@ -107,57 +112,54 @@ export default function Plans() {
           content="Buy cakes and increse the daily profit amount"
         />
       </Helmet>
-      {balance ? (
-        <div
-          style={
-            isBuyClicked ? { filter: "blur(5px)", pointerEvents: "none" } : {}
-          }
+      <div
+        style={
+          isBuyClicked ? { filter: "blur(5px)", pointerEvents: "none" } : {}
+        }
+      >
+        <p
+          className="fw-light m-0 mb-3 available-balance-text"
+          style={{ fontSize: "30px" }}
         >
-          <p className="fw-light m-0 mb-3 available-balance-text" style={{ fontSize: "30px" }}>
-            Available Balance <br />
-            <span className="fw-light balance-text">
-              <span>
-                <i
-                  className="bi bi-currency-rupee"
-                  style={{ fontSize: "27px" }}
-                >
-                  {balance > 0 ? balance : 0}
-                </i>
-              </span>
-            </span> 
-          </p>
-          <div className="d-flex justify-content-center flex-wrap">
-            {plans.map((plan, index) => (
-              <div className=" p-1" key={index}>
-                <div className="card" style={{ width: "14rem" }}>
-                  <img
-                    src={`/images/plansImages/${plan.image}`}
-                    className="card-img-top"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      {plan.price} -{" "}
-                      <span className="fw-light font-monospace">
-                        {plan.profit}/day
-                      </span>
-                    </h5>
-                    <p className="card-text ">{plan.text}</p>
-                    <button
-                      className="btn btn-primary"
-                      value={index}
-                      onClick={handleBuyPlan}
-                    >
-                      Buy
-                    </button>
-                  </div>
+          Available Balance <br />
+          <span className="fw-light balance-text">
+            <span>
+              <i className="bi bi-currency-rupee" style={{ fontSize: "27px" }}>
+                {balance}
+                {/* {balance > 0 ? balance : 0} */}
+              </i>
+            </span>
+          </span>
+        </p>
+        <div className="d-flex justify-content-center flex-wrap">
+          {plans.map((plan, index) => (
+            <div className=" p-1" key={index}>
+              <div className="card" style={{ width: "14rem" }}>
+                <img
+                  src={`/images/plansImages/${plan.image}`}
+                  className="card-img-top"
+                />
+                <div className="card-body">
+                  <h5 className="card-title">
+                    {plan.price} -{" "}
+                    <span className="fw-light font-monospace">
+                      {plan.profit}/day
+                    </span>
+                  </h5>
+                  <p className="card-text ">{plan.text}</p>
+                  <button
+                    className="btn btn-primary"
+                    value={index}
+                    onClick={handleBuyPlan}
+                  >
+                    Buy
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      ) : (
-        <Loading />
-      )}
+      </div>
       {isBuyClicked !== false && (
         <div className="p-3 py-4 border shadow-lg rounded plan-confirmation-box">
           <p className="h4 fw-light mb-3 fw-bold">Are you sure want to buy?</p>
@@ -181,6 +183,19 @@ export default function Plans() {
               Buy
             </button>
           </div>
+        </div>
+      )}
+
+      {buyConfirmationLoading && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
+          <BarLoading />
         </div>
       )}
     </div>
