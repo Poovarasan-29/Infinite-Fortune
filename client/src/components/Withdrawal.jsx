@@ -80,6 +80,16 @@ export default function Withdrawal() {
           }
         );
 
+        // Send Notification
+        if (notificationPermission == "granted") {
+          new Notification("Withdrawal in Progress!", {
+            body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
+            icon: "/favicon/apple-touch-icon.png",
+          });
+        } else {
+          toast.warning("Please allow notification to get alerts!");
+        }
+
         setAmount("");
         setTransferToUPI("");
         setIsFormSubmitted(false);

@@ -5,9 +5,11 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
 
 export default function Home() {
-  const { userData } = useContext(AuthContext);
+  const { userData, setNotificationPermission, notificationPermission } =
+    useContext(AuthContext);
   const [userFullDatas, setUserFullDatas] = useState();
 
   useEffect(() => {
@@ -16,10 +18,28 @@ export default function Home() {
         .get(import.meta.env.VITE_API_URL + "getUserDatasForDashboard", {
           params: { userId: userData?.userId },
         })
-        .then((res) => setUserFullDatas(res.data))
+        .then((res) => {
+          setUserFullDatas(res.data);
+          if (res.data.isClaimedToday) {
+            if (notificationPermission == "granted") {
+              new Notification("Boost Your Earnings Today!", {
+                body: "Unlock today's profits! Purchase a plan now to maximize your rewards.",
+                icon: "/favicon/apple-touch-icon.png",
+              });
+            } else {
+              toast.warning("Please allow notification to get alerts!");
+            }
+          }
+        })
         .catch((err) => console.error(err));
     }
-  }, [userData]); 
+
+    if (Notification.permission == "default") {
+      Notification.requestPermission().then((permission) =>
+        setNotificationPermission(permission)
+      );
+    }
+  }, [userData]);
 
   function handleDailyCheckIn(e) {
     axios
