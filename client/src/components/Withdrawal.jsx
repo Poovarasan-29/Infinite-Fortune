@@ -79,36 +79,45 @@ export default function Withdrawal() {
             transferToUPI,
           }
         );
-
-        setTimeout(() => {
-          // Send Notification
-          if (Notification.permission === "granted") {
-            new Notification("Withdrawal in Progress!", {
-              body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
-              icon: "/favicon/apple-touch-icon.png",
-            });
-          } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then((permission) => {
-              if (permission === "granted") {
-                new Notification("Withdrawal in Progress!", {
-                  body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
-                  icon: "/favicon/apple-touch-icon.png",
-                });
-              } else {
-                toast.warning("Please allow notifications to get alerts!");
-              }
-            });
-          } else {
-            toast.warning(
-              "Notifications are blocked. Enable them in settings."
-            );
-          }
-        }, 1000);
-
         setAmount("");
         setTransferToUPI("");
         setIsFormSubmitted(false);
         toast.success(res.data.message, { autoClose: 1400 });
+
+        // Notification
+        if ("Notification" in window) {
+          setTimeout(async () => {
+            if (Notification.permission === "granted") {
+              new Notification("Withdrawal in Progress!", {
+                body: `Your withdrawal of ₹${removeLeadingZeroAmount} is being processed and will be credited by 11:59 PM today.`,
+                icon: "/favicon/apple-touch-icon.png",
+              });
+            } else if (Notification.permission !== "denied") {
+              const permission = await Notification.requestPermission();
+              if (permission === "granted") {
+                new Notification("Withdrawal in Progress!", {
+                  body: `Your withdrawal of ₹${removeLeadingZeroAmount} is being processed and will be credited by 11:59 PM today.`,
+                  icon: "/favicon/apple-touch-icon.png",
+                });
+              } else {
+                toast.warning("Please allow notifications to get alerts!", {
+                  autoClose: 1300,
+                });
+              }
+            } else {
+              toast.warning(
+                "Notifications are blocked. Enable them in settings.",
+                {
+                  autoClose: 1300,
+                }
+              );
+            }
+          }, 1000);
+        } else {
+          toast.error("Your browser does not support notifications.", {
+            autoClose: 1300,
+          });
+        }
       } catch (error) {
         setIsFormSubmitted(false);
         toast.error(error.response.data.message, { autoClose: 1400 });

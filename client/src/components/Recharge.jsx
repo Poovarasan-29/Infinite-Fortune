@@ -17,7 +17,7 @@ export default function Recharge() {
   const [selectedUpi, setSelectedUpi] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionId, setTransactionId] = useState("");
-  const { userData, notificationPermission } = useContext(AuthContext);
+  const { userData } = useContext(AuthContext);
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [viewRechargeHistory, setViewRechargeHistory] = useState(false);
@@ -71,30 +71,40 @@ export default function Recharge() {
         setTransactionId("");
         setIsFormSubmitted(false);
         toast.success(res.data.message, { autoClose: 1400 });
-        setTimeout(() => {
-          // Send Notification
-          if (Notification.permission === "granted") {
-            new Notification("Recharge in Progress!", {
-              body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
-              icon: "/favicon/apple-touch-icon.png",
-            });
-          } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then((permission) => {
+
+        // Notification
+        if ("Notification" in window) {
+          setTimeout(async () => {
+            if (Notification.permission === "granted") {
+              new Notification("Recharge in Progress!", {
+                body: `Your recharge of ₹${removeLeadingZeroAmount} will be added to your dashboard by 11:59 PM today.`,
+                icon: "/favicon/apple-touch-icon.png",
+              });
+            } else if (Notification.permission !== "denied") {
+              const permission = await Notification.requestPermission();
               if (permission === "granted") {
                 new Notification("Recharge in Progress!", {
-                  body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
+                  body: `Your recharge of ₹${removeLeadingZeroAmount} will be added to your dashboard by 11:59 PM today.`,
                   icon: "/favicon/apple-touch-icon.png",
                 });
               } else {
-                toast.warning("Please allow notifications to get alerts!");
+                toast.warning("Please allow notifications to get alerts!", {
+                  autoClose: 1300,
+                });
               }
-            });
-          } else {
-            toast.warning(
-              "Notifications are blocked. Enable them in settings."
-            );
-          }
-        }, 1000);
+            } else {
+              toast.warning(
+                "Notifications are blocked. Enable them in settings."
+                , {
+                  autoClose: 1300,
+                });
+            }
+          }, 1000);
+        } else {
+          toast.error("Your browser does not support notifications.", {
+            autoClose: 1300,
+          });
+        }
       } catch (error) {
         setIsFormSubmitted(false);
         toast.success(error.response.data.message, { autoClose: 1400 });
