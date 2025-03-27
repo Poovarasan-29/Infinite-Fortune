@@ -8,8 +8,7 @@ import { Helmet } from "react-helmet-async";
 import { toast } from "react-toastify";
 
 export default function Home() {
-  const { userData, setNotificationPermission, notificationPermission } =
-    useContext(AuthContext);
+  const { userData } = useContext(AuthContext);
   const [userFullDatas, setUserFullDatas] = useState();
 
   useEffect(() => {
@@ -21,7 +20,7 @@ export default function Home() {
         .then((res) => {
           setUserFullDatas(res.data);
           if (!res.data.isClaimedToday) {
-            if (notificationPermission == "granted") {
+            if (Notification.permission == "granted") {
               new Notification("Boost Your Earnings Today!", {
                 body: "Unlock today's profits! Purchase a plan now to maximize your rewards.",
                 icon: "/favicon/apple-touch-icon.png",
@@ -35,9 +34,7 @@ export default function Home() {
     }
 
     if (Notification.permission == "default") {
-      Notification.requestPermission().then((permission) =>
-        setNotificationPermission(permission)
-      );
+      Notification.requestPermission();
     }
   }, [userData]);
 

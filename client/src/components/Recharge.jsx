@@ -65,21 +65,36 @@ export default function Recharge() {
             transactionId,
           }
         );
-        // Send Notification
-        // if (notificationPermission == "granted") {
-        //   new Notification("Recharge in Progress!", {
-        //     body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
-        //     icon: "/favicon/apple-touch-icon.png",
-        //   });
-        // } else {
-        //   toast.warning("Please allow notification to get alerts!");
-        // }
 
         setSelectedUpi("");
         setAmount("");
         setTransactionId("");
         setIsFormSubmitted(false);
         toast.success(res.data.message, { autoClose: 1400 });
+        setTimeout(() => {
+          // Send Notification
+          if (Notification.permission === "granted") {
+            new Notification("Recharge in Progress!", {
+              body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
+              icon: "/favicon/apple-touch-icon.png",
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                new Notification("Recharge in Progress!", {
+                  body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
+                  icon: "/favicon/apple-touch-icon.png",
+                });
+              } else {
+                toast.warning("Please allow notifications to get alerts!");
+              }
+            });
+          } else {
+            toast.warning(
+              "Notifications are blocked. Enable them in settings."
+            );
+          }
+        }, 1000);
       } catch (error) {
         setIsFormSubmitted(false);
         toast.success(error.response.data.message, { autoClose: 1400 });

@@ -80,15 +80,30 @@ export default function Withdrawal() {
           }
         );
 
-        // Send Notification
-        if (notificationPermission == "granted") {
-          new Notification("Withdrawal in Progress!", {
-            body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
-            icon: "/favicon/apple-touch-icon.png",
-          });
-        } else {
-          toast.warning("Please allow notification to get alerts!");
-        }
+        setTimeout(() => {
+          // Send Notification
+          if (Notification.permission === "granted") {
+            new Notification("Withdrawal in Progress!", {
+              body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
+              icon: "/favicon/apple-touch-icon.png",
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                new Notification("Withdrawal in Progress!", {
+                  body: `Your withdrawal of ₹${amount} is being processed and will be credited by 11:59 PM today.`,
+                  icon: "/favicon/apple-touch-icon.png",
+                });
+              } else {
+                toast.warning("Please allow notifications to get alerts!");
+              }
+            });
+          } else {
+            toast.warning(
+              "Notifications are blocked. Enable them in settings."
+            );
+          }
+        }, 1000);
 
         setAmount("");
         setTransferToUPI("");
