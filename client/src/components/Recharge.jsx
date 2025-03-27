@@ -66,14 +66,14 @@ export default function Recharge() {
           }
         );
         // Send Notification
-        if (notificationPermission == "granted") {
-          new Notification("Recharge in Progress!", {
-            body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
-            icon: "/favicon/apple-touch-icon.png",
-          });
-        } else {
-          toast.warning("Please allow notification to get alerts!");
-        }
+        // if (notificationPermission == "granted") {
+        //   new Notification("Recharge in Progress!", {
+        //     body: `Your recharge of ₹${amount} will be added to your dashboard by 11:59 PM today.`,
+        //     icon: "/favicon/apple-touch-icon.png",
+        //   });
+        // } else {
+        //   toast.warning("Please allow notification to get alerts!");
+        // }
 
         setSelectedUpi("");
         setAmount("");
