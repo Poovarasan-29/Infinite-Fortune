@@ -5,93 +5,75 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import { Helmet } from "react-helmet-async";
-import { toast } from "react-toastify";
 
 export default function Home() {
   const { userData } = useContext(AuthContext);
   const [userFullDatas, setUserFullDatas] = useState();
 
+  // useEffect(() => {
+  //   if (!userData?.userId) return;
+  //   axios
+  //     .get(import.meta.env.VITE_API_URL + "getUserDatasForDashboard", {
+  //       params: { userId: userData?.userId },
+  //     })
+  //     .then((res) => {
+  //       setUserFullDatas(res.data);
+  //     })
+  //     .catch((err) => console.error(err));
+
+  //   if (Notification.permission == "default") {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === "granted") {
+  //         console.log("Notifications allowed!");
+  //       } else {
+  //         console.warn("Notifications denied!");
+  //       }
+  //     });
+  //   }
+  // }, [userData]);
+
   useEffect(() => {
     if (!userData?.userId) return;
-    axios
-      .get(import.meta.env.VITE_API_URL + "getUserDatasForDashboard", {
-        params: { userId: userData?.userId },
-      })
-      .then((res) => {
+
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(
+          import.meta.env.VITE_API_URL + "getUserDatasForDashboard",
+          {
+            params: { userId: userData?.userId },
+          }
+        );
         setUserFullDatas(res.data);
-        if (!res.data.isClaimedToday) {
+
+        if (!res.data.isClaimedToday && "Notification" in window) {
           if (Notification.permission === "granted") {
             try {
               new Notification("Boost Your Earnings Today!", {
                 body: "Unlock today's profits! Purchase a plan now to maximize your rewards.",
                 icon: "/favicon/apple-touch-icon.png",
-                silent: true,
               });
             } catch (error) {
               console.error("Notification error:", error);
             }
-          } else {
-            toast.warning("Please allow notifications to get alerts!", {
-              autoClose: 1300,
+          } else if (Notification.permission === "default") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                console.log("Notifications allowed!");
+              } else {
+                console.warn("Notifications denied!");
+              }
             });
+          } else {
+            toast.warning("Please allow notifications to get alerts!");
           }
         }
-      })
-      .catch((err) => console.error(err));
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
 
-    if (Notification.permission == "default") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Notifications allowed!");
-        } else {
-          console.warn("Notifications denied!");
-        }
-      });
-    }
+    fetchUserData();
   }, [userData]);
-
-  // useEffect(() => {
-  //   if (!userData?.userId) return;
-
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         import.meta.env.VITE_API_URL + "getUserDatasForDashboard",
-  //         {
-  //           params: { userId: userData?.userId },
-  //         }
-  //       );
-  //       setUserFullDatas(res.data);
-
-  //       if (!res.data.isClaimedToday && "Notification" in window) {
-  //         if (Notification.permission === "granted") {
-  //           try {
-  //             new Notification("Boost Your Earnings Today!", {
-  //               body: "Unlock today's profits! Purchase a plan now to maximize your rewards.",
-  //               icon: "/favicon/apple-touch-icon.png",
-  //             });
-  //           } catch (error) {
-  //             console.error("Notification error:", error);
-  //           }
-  //         } else if (Notification.permission === "default") {
-  //           Notification.requestPermission().then((permission) => {
-  //             if (permission === "granted") {
-  //               console.log("Notifications allowed!");
-  //             } else {
-  //               console.warn("Notifications denied!");
-  //             }
-  //           });
-  //         } else {
-  //           toast.warning("Please allow notifications to get alerts!");
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching user data:", err);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [userData]);
 
   function handleDailyCheckIn(e) {
     axios

@@ -74,14 +74,13 @@ export default function Recharge() {
 
         // Notification
         if ("Notification" in window) {
-          setTimeout(async () => {
-            if (Notification.permission === "granted") {
-              new Notification("Recharge in Progress!", {
-                body: `Your recharge of ₹${removeLeadingZeroAmount} will be added to your dashboard by 11:59 PM today.`,
-                icon: "/favicon/apple-touch-icon.png",
-              });
-            } else if (Notification.permission !== "denied") {
-              const permission = await Notification.requestPermission();
+          if (Notification.permission === "granted") {
+            new Notification("Recharge in Progress!", {
+              body: `Your recharge of ₹${removeLeadingZeroAmount} will be added to your dashboard by 11:59 PM today.`,
+              icon: "/favicon/apple-touch-icon.png",
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
               if (permission === "granted") {
                 new Notification("Recharge in Progress!", {
                   body: `Your recharge of ₹${removeLeadingZeroAmount} will be added to your dashboard by 11:59 PM today.`,
@@ -92,14 +91,15 @@ export default function Recharge() {
                   autoClose: 1300,
                 });
               }
-            } else {
-              toast.warning(
-                "Notifications are blocked. Enable them in settings."
-                , {
-                  autoClose: 1300,
-                });
-            }
-          }, 1000);
+            });
+          } else {
+            toast.warning(
+              "Notifications are blocked. Enable them in settings.",
+              {
+                autoClose: 1300,
+              }
+            );
+          }
         } else {
           toast.error("Your browser does not support notifications.", {
             autoClose: 1300,
