@@ -20,7 +20,7 @@ export default function Home() {
         })
         .then((res) => {
           setUserFullDatas(res.data);
-          if (!res.data?.isClaimedToday) {
+          if (!res.data.isClaimedToday) {
             if (notificationPermission == "granted") {
               new Notification("Boost Your Earnings Today!", {
                 body: "Unlock today's profits! Purchase a plan now to maximize your rewards.",

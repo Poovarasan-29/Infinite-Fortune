@@ -36,7 +36,8 @@ export default function Login() {
   const { login } = useContext(AuthContext);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/dashboard/home");
+    if (localStorage.getItem("token") && !location.pathname.startsWith("/admin"))
+      navigate("/dashboard/home");
   }, []);
 
   async function onSubmit(datas) {
