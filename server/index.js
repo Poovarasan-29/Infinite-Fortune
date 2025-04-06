@@ -12,6 +12,7 @@ const plansRouter = require("./routes/plansRouter");
 const manageBalanceRouter = require("./routes/manageBalanceRouter");
 const withdrawalRequestRouter = require("./routes/withdrawalRequestRouter");
 const refreshCronJobByRouter = require("./refreshCronJobByRouter");
+require("./cronJob");
 
 connectDB();
 app.use(cors());
