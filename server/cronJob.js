@@ -4,12 +4,12 @@ const connectDB = require("./connectDatabase");
 const UsersModel = require("./models/UsersModel");
 require("dotenv").config();
 
-cron.schedule("2 14 * * *", async () => {
+cron.schedule("10 14 * * *", async () => {
   await axios.get("https://infinite-fortune.onrender.com/");
 });
 
 connectDB();
-cron.schedule("7 14 * * *", async () => {
+cron.schedule("13 14 * * *", async () => {
   try {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
