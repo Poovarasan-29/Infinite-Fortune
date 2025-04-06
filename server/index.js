@@ -11,7 +11,6 @@ const fetchDatasRouter = require("./routes/fetchDatasRouter");
 const plansRouter = require("./routes/plansRouter");
 const manageBalanceRouter = require("./routes/manageBalanceRouter");
 const withdrawalRequestRouter = require("./routes/withdrawalRequestRouter");
-const refreshCronJobByRouter = require("./refreshCronJobByRouter");
 require("./cronJob");
 
 connectDB();
@@ -28,8 +27,6 @@ app.use(plansRouter);
 app.use(manageBalanceRouter);
 app.use(withdrawalRequestRouter);
 
-// Referesh CronJob Router
-app.use(refreshCronJobByRouter);
 
 app.get("/", (req, res) => {
   res.send("Server is running...");
